@@ -294,6 +294,8 @@ namespace SpriterDotNet
         [XmlAttribute("t")]
         public float T;
 
+        public int ZIndex { set; get; }
+
         public SpriterObject()
         {
             PivotX = float.NaN;

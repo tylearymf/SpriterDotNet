@@ -212,7 +212,7 @@ namespace SpriterDotNet
                 else Time = 0.0f;
                 if (Time != initialTime) AnimationFinished(Name);
             }
-            else if (Time >= Length)
+            else if (Time > Length)
             {
                 if (CurrentAnimation.Looping) Time -= Length;
                 else Time = Length;

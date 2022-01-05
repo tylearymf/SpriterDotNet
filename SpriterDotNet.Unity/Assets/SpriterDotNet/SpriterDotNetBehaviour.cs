@@ -39,7 +39,6 @@ namespace SpriterDotNetUnity
         }
     }
 
-    [ExecuteInEditMode]
     public class SpriterDotNetBehaviour : MonoBehaviour
     {
         [HideInInspector]
@@ -65,9 +64,23 @@ namespace SpriterDotNetUnity
 
         public UnityAnimator Animator { get; private set; }
 
+        public int AnimationIndex { set; get; }
+        public int FrameIndex { set; get; }
+
         private string defaultTag;
 
-        private void Start()
+
+        void Start()
+        {
+            Init();
+        }
+
+        void Update()
+        {
+            ManualUpdate();
+        }
+
+        public void Init()
         {
             SpriterEntity entity = SpriterData.Spriter.Entities[EntityIndex];
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
@@ -80,12 +93,8 @@ namespace SpriterDotNetUnity
             Animator.Update(0);
         }
 
-        private void Update()
+        public void ManualUpdate()
         {
-#if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
-#endif
-
             if (Animator == null) return;
 
             Animator.SortingLayer = SortingLayer;
@@ -107,6 +116,27 @@ namespace SpriterDotNetUnity
                 if (entry.Sprite != null) Animator.SpriteProvider.Set(entry.FolderId, entry.FileId, entry.Sprite);
                 else Animator.SoundProvider.Set(entry.FolderId, entry.FileId, entry.Sound);
             }
+        }
+
+        public void SetFrameIndex(int frame, bool relative)
+        {
+            if (Animator == null)
+                return;
+
+            var currentAnimation = Animator.CurrentAnimation;
+            var mainlineKeys = currentAnimation.MainlineKeys;
+            if (relative)
+                frame = FrameIndex + frame;
+
+            if (frame < 0)
+                frame = mainlineKeys.Length - 1;
+
+            if (frame >= mainlineKeys.Length)
+                frame = 0;
+
+            FrameIndex = frame;
+            var time = mainlineKeys[frame].Time;
+            Animator.Update(time - Animator.Time);
         }
     }
 }

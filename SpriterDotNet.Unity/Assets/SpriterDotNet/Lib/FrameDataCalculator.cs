@@ -107,6 +107,8 @@ namespace SpriterDotNet
             SpriterMainlineKey keyB;
             GetMainlineKeys(animation.MainlineKeys, targetTime, out keyA, out keyB);
 
+            targetTime = keyA.Time;
+
             float adjustedTime = SpriterHelper.AdjustTime(targetTime, keyA, keyB, animation.Length);
 
             SpriterSpatial[] boneInfos = GetBoneInfos(keyA, animation, adjustedTime, parentInfo);
@@ -363,7 +365,12 @@ namespace SpriterDotNet
             if (keyB == null) return Copy(keyA.ObjectInfo);
 
             float factor = SpriterHelper.GetFactor(keyA, keyB, animation.Length, targetTime);
-            return Interpolate(keyA.ObjectInfo, keyB.ObjectInfo, factor, keyA.Spin);
+            var spriterObject = Interpolate(keyA.ObjectInfo, keyB.ObjectInfo, factor, keyA.Spin);
+
+            if (spriterRef is SpriterObjectRef objectRef)
+                spriterObject.ZIndex = objectRef.ZIndex;
+
+            return spriterObject;
         }
 
         protected virtual SpriterSpatial Interpolate(SpriterSpatial a, SpriterSpatial b, float f, int spin)

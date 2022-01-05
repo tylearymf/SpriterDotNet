@@ -94,7 +94,7 @@ namespace SpriterDotNetUnity
             childTransform.localScale = new Vector3(info.ScaleX, info.ScaleY, 1);
 
             renderer.sortingLayerName = SortingLayer;
-            renderer.sortingOrder = SortingOrder + index;
+            renderer.sortingOrder = info.ZIndex;
 
             ++index;
         }
