@@ -69,6 +69,7 @@ namespace SpriterDotNetUnity
                         sdnb.AnimationIndex = 0;
 
                     sdnb.Animator.Play(animations[sdnb.AnimationIndex]);
+                    SetFrameIndex(0, false);
                 }
 
                 EditorGUILayout.BeginVertical("box");
